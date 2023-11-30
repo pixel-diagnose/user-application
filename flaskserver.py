@@ -56,25 +56,24 @@ def upload_file():
             # for diagnose is diagnose:
             #   Do request
             search_results = get_similar_embeddings(
-                                search_vector=embeddings_from_upload,
-                                collection_name="resnet50_imagenet_embeddings",
-                                num_results=10,
-                                filter_diagnose=["met"],
-                                filter_image_type="t1"
-                                )
+                search_vector=embeddings_from_upload,
+                collection_name="resnet50_imagenet_embeddings",
+                num_results=10,
+                filter_diagnose=None,
+                filter_image_type=None,
+            )
             # Return JSON from QDRANT
             print(search_results)
             results_with_url = generate_signed_url(search_results)
             print("-------with url--------")
             print(results_with_url)
-            response = Response(
-                send_file(file_path, as_attachment=False).response,
-                content_type="image/jpeg",
-            )
-            #### we don't want to return the embedding but the url for the similar images
 
-            response.headers["search_results"] = jsonify(results_with_url)
-            return response
+            encoded_string = ""
+            with open(file_path, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read())
+            data = {"thing": results_with_url, "image_data": encoded_string}
+
+            return jsonify(data)
 
 
 @app.route("/")
