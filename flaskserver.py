@@ -59,8 +59,8 @@ def upload_file():
                                 search_vector=embeddings_from_upload,
                                 collection_name="resnet50_imagenet_embeddings",
                                 num_results=10,
-                                filter_diagnose=None,
-                                filter_image_type=None
+                                filter_diagnose=["met"],
+                                filter_image_type="t1"
                                 )
             # Return JSON from QDRANT
             print(search_results)

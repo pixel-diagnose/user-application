@@ -19,7 +19,6 @@ def start_qdrant_connection():
 
 collection_name = "resnet50_imagenet_embeddings"
 
-# TODO: Include the option to search for image_type and diagnose. Also, specify num_results
 def get_similar_embeddings(collection_name,search_vector,num_results,filter_diagnose=None,filter_image_type=None):
     """Gets similar embeddings according to specified distance metric. Returns num_results most similar embeddings
 
@@ -28,7 +27,7 @@ def get_similar_embeddings(collection_name,search_vector,num_results,filter_diag
         collection_name (String): Name of qdrant-colleciton
         search_vector (list): vector-list
         num_results (int): number of mist similar embeddings to be returned
-        filter_diagnose (String, optional): diagnose to filter
+        filter_diagnose (list(String), optional): diagnoses to filter - please provide a list of Strings
         filter_image_type (String, optional): image-type (t1, t2 etc.) to filter
     Returns:
         list: search_result
@@ -36,14 +35,12 @@ def get_similar_embeddings(collection_name,search_vector,num_results,filter_diag
     # Parse filter input
     if filter_diagnose and filter_image_type:
       filter = models.Filter(
-        must=[
-            models.FieldCondition(key="image_type",match=models.MatchValue(value=filter_image_type),),
-            models.FieldCondition(key="diagnose",match=models.MatchValue(value=filter_diagnose),),
-            ]
-          )
+        must=[models.FieldCondition(key="image_type",match=models.MatchValue(value=filter_image_type),),],
+        should=[models.FieldCondition(key="diagnose",match=models.MatchValue(value=i)) for i in filter_diagnose] # iterate through diagnoses
+        )
     elif filter_diagnose:
       filter = models.Filter(
-        must=[models.FieldCondition(key="diagnose",match=models.MatchValue(value=filter_diagnose),)]
+        should=[models.FieldCondition(key="diagnose",match=models.MatchValue(value=i)) for i in filter_diagnose] # iterate through diagnoses
         )
     elif filter_image_type:
       filter = models.Filter(
