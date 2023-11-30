@@ -166,4 +166,4 @@ def do_inference(modelname, image):
         case "img2vec152":
             embeddings = img2vec152.get_vec(image)
     print(embeddings)
-    return get_similar_embeddings(embeddings, 1)
+    return embeddings

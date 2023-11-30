@@ -13,36 +13,38 @@ private_key_path = "./google_service_credentials.json"
 
 # Function to generate a signed URL
 def generate_signed_url(search_results):
-    # Load credentials from the private key file
-    print("_______search_results_________")
-    print(search_results)
-    bucket_url = search_results["bucket_url"]
-    bucket_name = bucket_url.split("/")[2]
-    print(bucket_name)
-    object_path = (
-        "/".join(bucket_url.split("/")[3:])
-        + "png/"
-        + search_results["patient_id"]
-        + "_"
-        + search_results["image_type"]
-        + "_sliced.png"
-    )
-    print(object_path)
-    credentials = service_account.Credentials.from_service_account_file(
-        private_key_path
-    )
-    client = storage.Client(credentials=credentials)
+    for i in search_results.keys():
+        search_res = search_results[i]
+        # Load credentials from the private key file
+        print("_______search_results_________")
+        print(search_res)
+        bucket_url = search_res["bucket_url"]
+        bucket_name = bucket_url.split("/")[2]
+        print(bucket_name)
+        object_path = (
+            "/".join(bucket_url.split("/")[3:])
+            + "png/"
+            + search_res["patient_id"]
+            + "_"
+            + search_res["image_type"]
+            + "_sliced.png"
+        )
+        print(object_path)
+        credentials = service_account.Credentials.from_service_account_file(
+            private_key_path
+        )
+        client = storage.Client(credentials=credentials)
 
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(object_path)
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(object_path)
 
-    signed_url = blob.generate_signed_url(
-        version="v4",
-        expiration=3600,  # URL expires in 60 minutes (3600 seconds)
-        method="GET",
-    )
-    print("-----------------------------------")
-    print("signed url: ")
-    print(signed_url)
-    search_results["signed_url"] = signed_url
+        signed_url = blob.generate_signed_url(
+            version="v4",
+            expiration=3600,  # URL expires in 60 minutes (3600 seconds)
+            method="GET",
+        )
+        print("-----------------------------------")
+        print("signed url: ")
+        print(signed_url)
+        search_results[i]["signed_url"] = signed_url
     return search_results
