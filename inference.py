@@ -149,7 +149,6 @@ img2vec152 = None
 
 
 def load_models():
-    print("loading models")
     global img2vec50
     global img2vec152
     img2vec50 = Img2Vec(model="resnet50")
@@ -157,7 +156,6 @@ def load_models():
 
 
 def do_inference(modelname, image):
-    print("we're inferencing! maybe?")
     image = Image.open(image)
     embeddings = []
     match modelname:

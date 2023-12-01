@@ -36,6 +36,11 @@ def allowed_file(filename):
 @app.route("/inference", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
+        print("XXXXXXXXXXXXXXXXXXXXXXXX" + request.form["cancer_types"])
+        for key, value in request.form.items():
+            print(key, value)
+        print("XXXXXXXXXXXXXXXXXXXXXXXX" + request.form["image_type"])
+        print("XXXXXXXXXXXXXXXXXXXXXXXX" + request.form["number_of_results"])
         if "img" not in request.files:
             flash("No file part")
             return redirect(request.url)
@@ -47,7 +52,6 @@ def upload_file():
             filename = secure_filename(file.filename)
             file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(file_path)
-            print("saved file")
             # Get only embedding from uploaded picture here
             embeddings_from_upload = do_inference(
                 "img2vec50", os.path.join(app.config["UPLOAD_FOLDER"], filename)
@@ -56,25 +60,18 @@ def upload_file():
             # for diagnose is diagnose:
             #   Do request
             search_results = get_similar_embeddings(
-                                search_vector=embeddings_from_upload,
-                                collection_name="resnet50_imagenet_embeddings",
-                                num_results=10,
-                                filter_diagnose=["met"],
-                                filter_image_type="t1"
-                                )
+                search_vector=embeddings_from_upload,
+                collection_name="resnet50_imagenet_embeddings",
+                num_results=request.form["number_of_results"],
+                filter_diagnose=None,
+                filter_image_type=None,
+            )
             # Return JSON from QDRANT
-            print(search_results)
             results_with_url = generate_signed_url(search_results)
             print("-------with url--------")
             print(results_with_url)
-            response = Response(
-                send_file(file_path, as_attachment=False).response,
-                content_type="image/jpeg",
-            )
-            #### we don't want to return the embedding but the url for the similar images
 
-            response.headers["search_results"] = jsonify(results_with_url)
-            return response
+            return jsonify(results_with_url)
 
 
 @app.route("/")

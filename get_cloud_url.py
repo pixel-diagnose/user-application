@@ -16,11 +16,8 @@ def generate_signed_url(search_results):
     for i in search_results.keys():
         search_res = search_results[i]
         # Load credentials from the private key file
-        print("_______search_results_________")
-        print(search_res)
         bucket_url = search_res["bucket_url"]
         bucket_name = bucket_url.split("/")[2]
-        print(bucket_name)
         object_path = (
             "/".join(bucket_url.split("/")[3:])
             + "png/"
@@ -29,7 +26,6 @@ def generate_signed_url(search_results):
             + search_res["image_type"]
             + "_sliced.png"
         )
-        print(object_path)
         credentials = service_account.Credentials.from_service_account_file(
             private_key_path
         )
@@ -43,8 +39,5 @@ def generate_signed_url(search_results):
             expiration=3600,  # URL expires in 60 minutes (3600 seconds)
             method="GET",
         )
-        print("-----------------------------------")
-        print("signed url: ")
-        print(signed_url)
         search_results[i]["signed_url"] = signed_url
     return search_results
