@@ -24,13 +24,7 @@ def start_qdrant_connection():
 collection_name = "resnet50_imagenet_embeddings"
 
 
-def get_similar_embeddings(
-    collection_name,
-    search_vector,
-    num_results,
-    filter_diagnose=None,
-    filter_image_type=None,
-):
+def get_similar_embeddings(collection_name,search_vector,num_results,filter_diagnose=None,filter_image_type=None):
     """Gets similar embeddings according to specified distance metric. Returns num_results most similar embeddings
 
     Args:
@@ -45,52 +39,34 @@ def get_similar_embeddings(
     """
     # Parse filter input
     if filter_diagnose and filter_image_type:
-        filter = models.Filter(
-            must=[
-                models.FieldCondition(
-                    key="image_type",
-                    match=models.MatchValue(value=filter_image_type),
-                ),
-                models.FieldCondition(
-                    key="diagnose",
-                    match=models.MatchValue(value=filter_diagnose),
-                ),
-            ]
+      filter = models.Filter(
+        must=[models.FieldCondition(key="image_type",match=models.MatchValue(value=filter_image_type),),],
+        should=[models.FieldCondition(key="diagnose",match=models.MatchValue(value=i)) for i in filter_diagnose] # iterate through diagnoses
         )
     elif filter_diagnose:
-        filter = models.Filter(
-            must=[
-                models.FieldCondition(
-                    key="diagnose",
-                    match=models.MatchValue(value=filter_diagnose),
-                )
-            ]
+      filter = models.Filter(
+        should=[models.FieldCondition(key="diagnose",match=models.MatchValue(value=i)) for i in filter_diagnose] # iterate through diagnoses
         )
     elif filter_image_type:
-        filter = models.Filter(
-            must=[
-                models.FieldCondition(
-                    key="image_type",
-                    match=models.MatchValue(value=filter_image_type),
-                )
-            ]
+      filter = models.Filter(
+        must=[models.FieldCondition(key="image_type",match=models.MatchValue(value=filter_image_type),)]
         )
     else:
-        filter = None
-
+      filter = None
+    
     search_result = qdrant_client.search(
         collection_name=collection_name,
         query_vector=search_vector,
         query_filter=filter,
-        limit=num_results,
+        limit=num_results
     )
-
+    
     # Transform so it returns a json
     search_result_dict = {}
-    for counter, i in enumerate(search_result):
+    for counter,i in enumerate(search_result):
         payload = i.payload
         payload["score"] = i.score
-
+        
         search_result_dict[counter] = payload
-
+        
     return search_result_dict
