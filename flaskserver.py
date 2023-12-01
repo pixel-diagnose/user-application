@@ -62,10 +62,9 @@ def upload_file():
                 [
                     key
                     for key, value in json.loads(request.form["image_type"]).items()
-                    if value == "true"
+                    if value
                 ]
             )
-            assert len(requested_image_type) == 1
             requested_diagnoses = [
                 key.replace("Gliomas", "glioma")
                 .replace("Meningiomas", "men")
@@ -73,7 +72,7 @@ def upload_file():
                     "Metastasis", "met"
                 )  # change because disgnoses are stored differnetly on QDRANT
                 for key, value in json.loads(request.form["cancer_types"]).items()
-                if value == "true"
+                if value
             ]
             results = {
                 diagnose: generate_signed_url(
