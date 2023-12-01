@@ -17,7 +17,15 @@ from google.cloud import storage
 from google.auth import compute_engine
 from get_cloud_url import generate_signed_url
 from qdrant_stuff import get_similar_embeddings
+#from client import open_browser, start_flask_server
+#from inference import load_models
+#from qdrant_stuff import start_qdrant_connection
 import json
+
+
+#start_flask_server()
+#open_browser()
+#load_models()
 
 ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif", "dcm", "nii.gz"}
 
@@ -99,4 +107,4 @@ def frontend():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=os.getenv("PORT", default=5000))
+    app.run(host='0.0.0.0', port=5001) #app.run(debug=True, port=os.getenv("PORT", default=5000))

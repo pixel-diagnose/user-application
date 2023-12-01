@@ -1,8 +1,10 @@
 from google.cloud import storage
 from google.oauth2 import service_account
+from dotenv import dotenv_values
+import json
 
-# Set the path to your private key file
-private_key_path = "./google_service_credentials.json"
+# Set your private key file
+private_key = json.loads(dotenv_values(".env")["google_credentials"])
 
 # Set the GCS bucket and object path
 # bucket_name = "schwannoma-mc-rc"
@@ -26,8 +28,8 @@ def generate_signed_url(search_results):
             + search_res["image_type"]
             + "_sliced.png"
         )
-        credentials = service_account.Credentials.from_service_account_file(
-            private_key_path
+        credentials = service_account.Credentials.from_service_account_info(
+            private_key
         )
         client = storage.Client(credentials=credentials)
 
