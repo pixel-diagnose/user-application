@@ -1,6 +1,6 @@
+__pycache__/
 .venv/
 venv
-__pycache__/
 .env
 env
 google_service_credentials.json
