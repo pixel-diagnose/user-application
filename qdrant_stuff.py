@@ -37,6 +37,9 @@ def get_similar_embeddings(collection_name,search_vector,num_results,filter_diag
     Returns:
         list: search_result
     """
+    
+    
+    
     # Parse filter input
     if filter_diagnose and filter_image_type:
       filter = models.Filter(

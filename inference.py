@@ -150,9 +150,9 @@ img2vec152 = None
 
 def load_models():
     global img2vec50
-    global img2vec152
+    global img2vec152 
     img2vec50 = Img2Vec(model="resnet50")
-    img2vec152 = Img2Vec(model="resnet152")
+    #img2vec152 = Img2Vec(model="resnet152") # Not downloading because for now, we are are only using RESNET50
 
 
 def do_inference(modelname, image):
