@@ -13,7 +13,7 @@ def open_browser():
 # start a webserver
 def start_flask_server():
     # Run the Flask app in a separate thread
-    server_thread = Thread(target=app.run(host='0.0.0.0', port=5001), kwargs={"debug": False})
+    server_thread = Thread(target=app.run(host='0.0.0.0', port=5001), kwargs={"debug": True})
     server_thread.start()
 
 

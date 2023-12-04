@@ -10,9 +10,9 @@ from qdrant_stuff import start_qdrant_connection
 
 
 start_qdrant_connection()
+load_models()
 start_flask_server()
 open_browser()
-load_models()
 
 
 ### mvc view: react, controller: this python programm, model/ datasoruce: qdrant, gogole cloud storage

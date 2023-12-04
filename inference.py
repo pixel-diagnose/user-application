@@ -143,14 +143,11 @@ class Img2Vec:
         else:
             raise KeyError("Model %s was not found" % model_name)
 
-
 img2vec50 = None
-img2vec152 = None
-
 
 def load_models():
     global img2vec50
-    global img2vec152 
+    #global img2vec152 
     img2vec50 = Img2Vec(model="resnet50")
     #img2vec152 = Img2Vec(model="resnet152") # Not downloading because for now, we are are only using RESNET50
 

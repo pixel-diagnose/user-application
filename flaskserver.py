@@ -43,6 +43,7 @@ def allowed_file(filename):
 
 @app.route("/inference", methods=["GET", "POST"])
 def upload_file():
+    print("Upload")
     if request.method == "POST":
         print("XXXXXXXXXXXXXXXXXXXXXXXX" + request.form["cancer_types"])
         for key, value in request.form.items():
@@ -107,4 +108,4 @@ def frontend():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001) #app.run(debug=True, port=os.getenv("PORT", default=5000))
+    app.run(host='0.0.0.0', port=5001, debug=True) #app.run(debug=True, port=os.getenv("PORT", default=5000))
